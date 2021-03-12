@@ -18,7 +18,7 @@ def get_anchors():
     vals = r.mget(keys)
     return dict(zip(keys, vals))
 
-@app.route('/get_anchor', methods=['POST'])
+@app.route('/get_anchor')
 def get_anchor():
     return r.get(request.form["SensorID"])
 
