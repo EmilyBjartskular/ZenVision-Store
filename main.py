@@ -6,26 +6,26 @@ import json
 app = Flask(__name__)
 r = Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
-@app.route('/delete_anchor', methods=['POST'])
+@app.route('/delete', methods=['POST'])
 def delete_anchor():
-    sensorID = request.form["SensorID"]
+    sensorID = request.form["AnchorID"]
     r.delete(sensorID)
-    return 'Deleted anchor: "%s"' % sensorID
+    return 'Deleted anchor/sensor pair: "%s"' % sensorID
     
-@app.route('/get_anchors')
+@app.route('/get_all')
 def get_anchors():
     keys = r.scan()[1]
     vals = r.mget(keys)
     return dict(zip(keys, vals))
 
-@app.route('/get_anchor')
+@app.route('/get', methods=['GET','POST'])
 def get_anchor():
-    return r.get(request.form["SensorID"])
+    return r.get(request.form["AnchorID"])
 
-@app.route('/set_anchor', methods=['POST'])
+@app.route('/set', methods=['POST'])
 def set_anchor():
-    sensorID = request.form["SensorID"]
     anchorID = request.form["AnchorID"]
-    r.set(sensorID, anchorID)
-    return 'Created anchor: {%s: %s}' % (sensorID, anchorID)
+    sensorID = request.form["SensorID"]
+    r.set(anchorID, sensorID)
+    return 'Created anchor/sensor pair: {%s: %s}' % (anchorID, sensorID)
 
